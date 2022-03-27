@@ -1,0 +1,17 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: {{ template "common.rbac.apiVersion" . }}
+kind: "ClusterRole"
+metadata:
+  name: {{ template "grubhub.fullname" . }}
+  labels:
+{{ include "grubhub.labels" . | indent 4 }}
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    verbs:
+    - get
+    - list
+    - watch
+{{- end }}

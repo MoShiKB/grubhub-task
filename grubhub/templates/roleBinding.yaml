@@ -1,0 +1,16 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: {{ template "common.rbac.apiVersion" . }}
+kind: "ClusterRoleBinding"
+metadata:
+  name: {{ template "grubhub.fullname" . }}
+  labels:
+{{ include "grubhub.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: "ClusterRole"
+  name: {{ template "grubhub.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "grubhub.serviceAccountName" . }}
+  namespace: default
+{{- end -}}
