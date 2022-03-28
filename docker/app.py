@@ -7,8 +7,10 @@ from templates.ip import get_ip
 
 app = Flask(__name__)
 
+# Counter for prometheus
 view_metric = Counter('view', 'Pods', ['env'])
 
+# Try to get env, else enter empty string to var
 try:
     env = os.environ['env']
 except:
@@ -18,21 +20,26 @@ except:
 
 @app.route('/')
 def hello():
-    return 'Hello World!'
+    return 'Hello Grubhub!'
 
+# Getting Pods
 @app.route('/pods',methods=['GET'])
 def pods():
+    # Increasing metrics each connection
     view_metric.labels(env=env).inc()
     return str(get_pods())
 
 @app.route('/metrics',methods=['GET'])
 def metrics():
+    # Generate prometheus metrics page
     return generate_latest()
 
+# Getting IP of container
 @app.route('/me',methods=['GET'])
 def characters():
     return get_ip(), 200
 
+# Health check for the application
 @app.route('/health')
 def health():
     if env != "":
@@ -40,6 +47,7 @@ def health():
     else:
         return ("ERROR"), 503
 
+# Run Command
 def main():
     app.run(host='0.0.0.0', port=5000, debug=True)
 
